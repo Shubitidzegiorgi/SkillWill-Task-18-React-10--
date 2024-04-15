@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import UserForm from './components/UserForm';
 
+
 interface User {
-  id: string;
+  _uuid: string;
   FirstName: string;
   LastName: string;
 }
 
-const API_KEY = 'UGimnbm-FpiBsKUIvhr-kPoehcGKaI0xNIECjy2dV_ZtSjcdyA';
+
 
 function App(): JSX.Element {
   const [userList, setUserList] = useState<User[]>([]);
@@ -22,7 +23,7 @@ function App(): JSX.Element {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${API_KEY}`,
+        "Authorization": `Bearer ${process.env.REACT_APP_API_KEY}`,
       },
     })
       .then((res) => {
@@ -31,10 +32,10 @@ function App(): JSX.Element {
       })
       .then((data) =>
         setUserList(
-          data.items.map((user: any) => ({
+          data.items.map((user: User) => ({
             FirstName: user.FirstName,
             LastName: user.LastName,
-            id: user._uuid,
+            _uuid: user._uuid,
           }))
         )
       )
@@ -46,7 +47,7 @@ function App(): JSX.Element {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${API_KEY}`,
+        "Authorization": `Bearer ${process.env.REACT_APP_API_KEY}`,
       },
       body: JSON.stringify([{ FirstName, LastName }]),
     })
@@ -59,7 +60,7 @@ function App(): JSX.Element {
           {
             FirstName: data.items[0].FirstName,
             LastName: data.items[0].LastName,
-            id: data.items[0]._uuid,
+            _uuid: data.items[0]._uuid,
           },
           ...prev,
         ])
@@ -74,7 +75,7 @@ function App(): JSX.Element {
       <button onClick={() => setUserList([])}>Clear Users</button>
 
       {userList.map((user) => (
-        <div key={user.id} style={{ border: '3px solid grey' }}>
+        <div key={user._uuid} style={{ border: '3px solid grey' }}>
           <h3>{user.FirstName}</h3>
           <h4>{user.LastName}</h4>
         </div>
